@@ -134,10 +134,24 @@ void at42qt1070_reset() {
 }
 
 void at42qt1070_set_lp(uint8_t value) {
-  uint8_t buf[2] = { AT42QT107_LP, value);
+  uint8_t buf[2] = { AT42QT107_LP, value};
   i2c_write_blocking(i2c_default, ADDR, buf, 2, false);
 }
 
 bool at42qt1070_touched() {
-  
+  uint8_t buf[1];
+  i2c_writing_blocking(i2c_default, ADDR, AT42QT107_DETECT_STATUS, 1, true);
+  i2c_read_blocking(i2c_default, ADDR, buf,1, false);
+  bool touched = false;
+  if (t & 0xF) {
+    touched = true;
+  }
+  return touched;
+}
+
+uint8_t at42qt1070_key_touched() {
+  uint8_t buf[1];
+  i2c_write_blocking(i2c_default, ADDR, AT42QT107_KEY_STATUS, 1, true);
+  i2c_read_blocking(i2c_default, ADDR, buf, 1, false);
+  return buf[0];
 }
